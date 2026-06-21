@@ -49,8 +49,7 @@ app.use("/api/*", async (req, res, next) => {
     console.error("DATABASE CONNECTION FAILURE DURING REQUEST:", err);
     res.status(500).json({
       success: false,
-      message: "Database connection failed",
-      error: "Database connection failed"
+      message: "Unable to connect to database"
     });
   }
 });
@@ -77,8 +76,12 @@ app.use((req, res, next) => {
 
 // Paths
 const uploadsDir = path.join(process.cwd(), "uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (directoryError) {
+  console.warn("[WARNING] Skipping local file uploads folder initialization (read-only system):", directoryError);
 }
 
 // Serve uploaded files statically at /uploads

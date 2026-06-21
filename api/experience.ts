@@ -4,7 +4,7 @@ import { DatabaseService, ensureDatabaseInitialized } from "../server/db";
 export default async function handler(req: Request, res: Response) {
   res.setHeader("Content-Type", "application/json");
 
-  console.log(`\nAPI REQUEST:\n/api/profile`);
+  console.log(`\nAPI REQUEST:\n/api/experience`);
   console.log(`ENV CHECK:\nDATABASE_URL available:\n${!!process.env.DATABASE_URL}`);
   console.log("DATABASE CONNECTION START");
 
@@ -12,9 +12,10 @@ export default async function handler(req: Request, res: Response) {
     await ensureDatabaseInitialized();
     console.log("DATABASE CONNECTION SUCCESS");
 
-    console.log("DATABASE QUERY:\nSELECT content key profile");
-    const data = DatabaseService.getProfile();
-    const hasRecord = !!data;
+    console.log("DATABASE QUERY:\nSELECT content key experience");
+    const includeInactive = req.query.includeInactive === "true" || !!req.headers.authorization;
+    const data = DatabaseService.getExperiences(includeInactive);
+    const hasRecord = !!(data && data.length > 0);
     console.log(`DATABASE RESPONSE:\nrecord found:\n${hasRecord}`);
 
     console.log("API RESPONSE SENT:\nsuccess:\ntrue");
