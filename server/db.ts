@@ -958,6 +958,7 @@ export class DatabaseService {
   // ==========================================
 
   public static getProfile() {
+    console.log("CONTENT FETCH:\nprofile");
     const db = this.read();
     return db.profile;
   }
@@ -975,6 +976,7 @@ export class DatabaseService {
   }
 
   public static getHero() {
+    console.log("CONTENT FETCH:\nhero");
     const db = this.read();
     return db.hero;
   }
@@ -1050,6 +1052,7 @@ export class DatabaseService {
   }
 
   public static getArticles(includeDrafts = false) {
+    console.log("CONTENT FETCH:\narticles");
     const db = this.read();
     let list = db.articles || [];
     if (!includeDrafts) {
