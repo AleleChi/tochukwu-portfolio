@@ -39,8 +39,8 @@ const FALLBACK_HERO: HeroType = {
   headline: "Building clarity between organizations, communities, and people.",
   highlightedWord: "clarity",
   description: "Crafting high-impact strategic communications, coordinating public engagement initiatives, and directing media engagement strategies to foster trust and clear storytelling.",
-  primaryCTA: "Explore Portfolio",
-  secondaryCTA: "Get in Touch",
+  primaryCTA: "View Portfolio",
+  secondaryCTA: "Start Conversation",
   heroImage: "/input_file_0.png",
   personas: [
     {

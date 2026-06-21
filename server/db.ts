@@ -35,8 +35,8 @@ export const HeroSchema = z.object({
   headline: z.string().min(5, "Headline of a storyteller demands detail"),
   highlightedWord: z.string().min(1, "Provide a focal word for visual contrast"),
   description: z.string().min(10, "Describe your core philosophy neatly"),
-  primaryCTA: z.string().default("Explore Portfolio"),
-  secondaryCTA: z.string().default("Get in Touch"),
+  primaryCTA: z.string().default("View Portfolio"),
+  secondaryCTA: z.string().default("Start Conversation"),
   heroImage: z.string().min(1, "A hero image pathway is required"),
   personas: z.array(PersonaSchema).default([]),
   createdAt: z.string().optional(),
@@ -477,8 +477,8 @@ export class DatabaseService {
       headline: obj.hero.headline || "Building clarity between organizations, communities, and people.",
       highlightedWord: obj.hero.highlightedWord || "clarity",
       description: obj.hero.description || "Crafting high-impact strategic communications, coordinating public engagement initiatives, and directing media engagement strategies to foster trust and clear storytelling.",
-      primaryCTA: obj.hero.primaryCTA || "Explore Portfolio",
-      secondaryCTA: obj.hero.secondaryCTA || "Get in Touch",
+      primaryCTA: obj.hero.primaryCTA || "View Portfolio",
+      secondaryCTA: obj.hero.secondaryCTA || "Start Conversation",
       heroImage: obj.hero.heroImage || "/input_file_0.png",
       personas: Array.isArray(obj.hero.personas) ? obj.hero.personas.map((p: any) => ({
         id: typeof p.id === "number" ? p.id : 0,
@@ -496,8 +496,8 @@ export class DatabaseService {
       title: obj.hero.title || obj.profile?.title || "Communication Professional & Media Specialist",
       subtitle: obj.hero.subtitle || obj.hero.headline || "Building clarity between organizations, communities, and people.",
       heroStatement: obj.hero.heroStatement || obj.hero.description || "Crafting high-impact strategic communications, coordinating public engagement initiatives, and directing media engagement strategies to foster trust and clear storytelling.",
-      ctaPrimary: obj.hero.ctaPrimary || obj.hero.primaryCTA || "Explore Portfolio",
-      ctaSecondary: obj.hero.ctaSecondary || obj.hero.secondaryCTA || "Get in Touch",
+      ctaPrimary: obj.hero.ctaPrimary || obj.hero.primaryCTA || "View Portfolio",
+      ctaSecondary: obj.hero.ctaSecondary || obj.hero.secondaryCTA || "Start Conversation",
       imageUrl: obj.hero.imageUrl || obj.hero.heroImage || "/input_file_0.png"
     };
 
@@ -894,16 +894,16 @@ export class DatabaseService {
         headline: "Building clarity between organizations, communities, and people.",
         highlightedWord: "clarity",
         description: "Crafting high-impact strategic communications, coordinating public engagement initiatives, and directing media engagement strategies to foster trust and clear storytelling.",
-        primaryCTA: "Explore Portfolio",
-        secondaryCTA: "Get in Touch",
+        primaryCTA: "View Portfolio",
+        secondaryCTA: "Start Conversation",
         heroImage: "/input_file_0.png",
         personas: [],
         name: "Tochukwu Ogunaka",
         title: "Communication Professional & Media Specialist",
         subtitle: "Building clarity between organizations, communities, and people.",
         heroStatement: "Crafting high-impact strategic communications, coordinating public engagement initiatives, and directing media engagement strategies to foster trust and clear storytelling.",
-        ctaPrimary: "Explore Portfolio",
-        ctaSecondary: "Get in Touch",
+        ctaPrimary: "View Portfolio",
+        ctaSecondary: "Start Conversation",
         imageUrl: "/input_file_0.png"
       },
       practice: {

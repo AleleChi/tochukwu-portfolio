@@ -22,6 +22,15 @@ function getCloudinaryPublicId(url: string): string | null {
 export const app = express();
 const PORT = 3000;
 
+// Normalize req.url/originalUrl for consistent routing on Vercel and Express
+app.use((req, res, next) => {
+  const targetUrl = req.originalUrl || req.url;
+  if (targetUrl && req.url !== targetUrl) {
+    req.url = targetUrl;
+  }
+  next();
+});
+
 // Enable JSON parser & URL-encoded systems with secure payload limits
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
@@ -156,28 +165,43 @@ const upload = multer({
 // --- AUTHENTICATION ROUTES (Phase 3) ---
 
 app.post("/api/auth/login", loginRateLimitMiddleware, async (req, res) => {
+  console.log("AUTH LOGIN START");
+  console.log("REQUEST RECEIVED");
   try {
     const { email, password, username } = req.body;
     const loginIdentifier = (email || username || "").trim().toLowerCase();
     
     if (!loginIdentifier || !password) {
-      return res.status(400).json({ success: false, error: "Email and password are required fields" });
+      const msg = "Email and password are required fields";
+      console.log("LOGIN FAILURE: " + msg);
+      return res.status(400).json({ success: false, message: msg, error: msg });
     }
     
+    console.log("DATABASE CONNECTION CHECK");
+    await ensureDatabaseInitialized();
+    
+    console.log("ADMIN USER QUERY START");
     const db = DatabaseService.read();
     if (!db.adminUsers || db.adminUsers.length === 0) {
-      return res.status(500).json({ success: false, error: "Authentication database has not been initialized" });
+      const msg = "Authentication database has not been initialized";
+      console.log("LOGIN FAILURE: " + msg);
+      return res.status(500).json({ success: false, message: msg, error: msg });
     }
     
     // Find the admin user with matching email address
     const adminUser = db.adminUsers.find(u => u.email.toLowerCase() === loginIdentifier);
     if (!adminUser) {
-      return res.status(401).json({ success: false, error: "Invalid email or password." });
+      const msg = "Invalid email or password.";
+      console.log("LOGIN FAILURE: " + msg);
+      return res.status(401).json({ success: false, message: msg, error: msg });
     }
     
+    console.log("ADMIN USER FOUND");
     const isValid = await AuthService.comparePassword(password, adminUser.passwordHash);
     if (!isValid) {
-      return res.status(401).json({ success: false, error: "Invalid email or password." });
+      const msg = "Invalid email or password.";
+      console.log("LOGIN FAILURE: " + msg);
+      return res.status(401).json({ success: false, message: msg, error: msg });
     }
     
     // Update lastLogin timestamp
@@ -192,6 +216,7 @@ app.post("/api/auth/login", loginRateLimitMiddleware, async (req, res) => {
       tokenVersion: adminUser.tokenVersion
     });
 
+    console.log("LOGIN SUCCESS");
     res.json({
       success: true,
       message: "Authentication established successfully",
@@ -205,7 +230,9 @@ app.post("/api/auth/login", loginRateLimitMiddleware, async (req, res) => {
       }
     });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message || "Failed administrative challenge" });
+    const msg = err.message || "Failed administrative challenge";
+    console.log("LOGIN FAILURE: " + msg);
+    res.status(500).json({ success: false, message: msg, error: msg });
   }
 });
 

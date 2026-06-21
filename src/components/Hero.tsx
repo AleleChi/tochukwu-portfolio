@@ -66,7 +66,7 @@ export default function Hero({ hero, organisations }: HeroProps) {
                 onClick={() => scrollToId("selected-work")}
                 className="group relative cursor-pointer px-6 py-3.5 border border-[#C9A84C]/50 bg-[#C9A84C]/5 text-[#F9F7F3] hover:bg-[#C9A84C] hover:text-[#111112] text-center font-mono text-[10.5px] uppercase tracking-widest font-semibold transition-all duration-300"
               >
-                {hero.primaryCTA || "View My Work"}
+                {hero.primaryCTA || "View Portfolio"}
               </button>
 
               <button

@@ -207,6 +207,16 @@ export default function AdminDashboard({ isOpen, onClose, initialData, onSave }:
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingField, setUploadingField] = useState<{ type: string; id?: number; field?: string } | null>(null);
 
+  // Telemetry logs for Hero Strategic Narrative editor section
+  useEffect(() => {
+    if (activeTab === "hero") {
+      console.log("HERO EDITOR LOAD");
+      console.log("CTA VALUES:");
+      console.log("primaryCTA:", hero.primaryCTA || "View Portfolio");
+      console.log("secondaryCTA:", hero.secondaryCTA || "Start Conversation");
+    }
+  }, [activeTab, hero.primaryCTA, hero.secondaryCTA]);
+
   // Admin Data Sync Engine
   const loadAdminData = async () => {
     const token = localStorage.getItem("admin_token");
@@ -751,10 +761,17 @@ export default function AdminDashboard({ isOpen, onClose, initialData, onSave }:
     try {
       await onSave(payload);
       const label = tabNames[activeTab] || "Workspace";
-      setSaveMessage(`✓ ${label} updated successfully`);
+      if (activeTab === "hero") {
+        setSaveMessage("Hero content updated successfully.");
+        console.log("HERO UPDATE SUCCESS");
+      } else {
+        setSaveMessage(`✓ ${label} updated successfully`);
+      }
       
       if (activeTab === "articles") {
         addToast("success", "Article Saving", "Article updated successfully.");
+      } else if (activeTab === "hero") {
+        addToast("success", "Hero Saving", "Hero content updated successfully.");
       } else {
         addToast("success", "Content Saving", "Changes saved successfully.");
       }
@@ -1280,6 +1297,30 @@ export default function AdminDashboard({ isOpen, onClose, initialData, onSave }:
                       onChange={(e) => setHero(prev => ({ ...prev, description: e.target.value }))}
                       className="w-full bg-[#1E1E20] border border-white/10 rounded-sm py-2 px-3 text-sm focus:border-brand-gold outline-none font-sans"
                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[10px] font-mono text-[#8E8E93] uppercase tracking-wider">Primary CTA Label</label>
+                      <input 
+                         type="text" 
+                         value={hero.primaryCTA || ""}
+                         onChange={(e) => setHero(prev => ({ ...prev, primaryCTA: e.target.value }))}
+                         placeholder="View Portfolio"
+                         className="w-full bg-[#1E1E20] border border-white/10 rounded-sm py-2 px-3 text-sm focus:border-brand-gold outline-none"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[10px] font-mono text-[#8E8E93] uppercase tracking-wider">Secondary CTA Label</label>
+                      <input 
+                         type="text" 
+                         value={hero.secondaryCTA || ""}
+                         onChange={(e) => setHero(prev => ({ ...prev, secondaryCTA: e.target.value }))}
+                         placeholder="Start Conversation"
+                         className="w-full bg-[#1E1E20] border border-white/10 rounded-sm py-2 px-3 text-sm focus:border-brand-gold outline-none"
+                      />
+                    </div>
                   </div>
 
                   {/* Profile sliders cards */}
