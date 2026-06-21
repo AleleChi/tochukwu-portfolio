@@ -21,10 +21,13 @@ export class EmailService {
     const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
-    let smtpFrom = process.env.SMTP_FROM || `"Tochukwu Ogunaka" <ogunakatochukwu@gmail.com>`;
-    if (process.env.SMTP_FROM && !process.env.SMTP_FROM.includes("<")) {
-      smtpFrom = `"Tochukwu Ogunaka" <${process.env.SMTP_FROM}>`;
+    let rawSmtpFrom = process.env.SMTP_FROM || "ogunakatochukwu@gmail.com";
+    let cleanEmail = rawSmtpFrom;
+    const match = rawSmtpFrom.match(/<([^>]+)>/);
+    if (match) {
+      cleanEmail = match[1];
     }
+    const smtpFrom = `Tochukwu Website <${cleanEmail}>`;
 
     const textBody = `Hello Tochukwu,
 
@@ -163,17 +166,38 @@ Communication Professional & Media Specialist
 
       const info = await transporter.sendMail({
         from: smtpFrom,
-        to: recipients.join(", "),
+        replyTo: payload.email,
+        to: recipients,
         subject: `New Professional Enquiry — Tochukwu Ogunaka`,
         html: htmlBody,
         text: textBody
       });
 
+      console.log("LOG:\nSMTP SEND DONE");
+      console.log(`- messageId: ${info.messageId || "N/A"}`);
+      console.log(`- accepted recipients: ${JSON.stringify(info.accepted || [])}`);
+      console.log(`- rejected recipients: ${JSON.stringify(info.rejected || [])}`);
+      console.log(`- response status: ${info.response || "N/A"}`);
+
+      // Gmail compatibility / Acceptance Check
+      const acceptedList = Array.isArray(info.accepted) 
+        ? info.accepted.map((r: any) => typeof r === 'string' ? r.toLowerCase() : JSON.stringify(r)) 
+        : [];
+      
+      const hasAccepted = recipients.some(recip => 
+        acceptedList.some(acc => acc.includes(recip.toLowerCase()))
+      );
+
+      if (!hasAccepted) {
+        const errorDetail = `No destination email found in accepted recipients. Accepted: ${JSON.stringify(info.accepted)}`;
+        console.log(`LOG:\nEMAIL SEND FAILED + ERROR: ${errorDetail}`);
+        return { success: false, error: errorDetail };
+      }
+
       console.log(`[SMTP] Success! Email message sent successfully: ${info.messageId}`);
       return { success: true, messageId: info.messageId };
     } catch (err: any) {
       console.error(`[SMTP ERROR] Failed to send email via SMTP service:`, err.message || err);
-      // Fallback response with the logs displayed in the server console for immediate developer/user triage
       return { success: false, error: err.message || String(err) };
     }
   }

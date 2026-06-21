@@ -947,6 +947,7 @@ app.get("/api/selected-work", (req, res) => {
 
 app.post("/api/contact-submit", contactRateLimitMiddleware, async (req, res) => {
   try {
+    console.log("LOG:\nCONTACT RECEIVED");
     const { name, email, subject, message, organization, category } = req.body;
     if (!name || !email || !message) {
       return res.status(400).json({ success: false, message: "Please input all mandatory contact fields (Name, Email, Message).", error: "Please input all mandatory contact fields (Name, Email, Message)." });
@@ -983,20 +984,30 @@ app.post("/api/contact-submit", contactRateLimitMiddleware, async (req, res) => 
       organization: organization || null,
       category: category || null
     });
+    console.log("LOG:\nDATABASE SAVE SUCCESS");
 
     // Send immediate email notification to matching admins (Step 2)
-    // Run asynchronously / try-catch so it doesn't block client response
-    try {
-      await EmailService.sendEnquiryNotification({
-        name,
-        email,
-        organization: organization || null,
-        category: category || "General Inquiry",
-        message,
-        timestamp: payload.date
-      }, req.headers.host || "localhost:3000");
-    } catch (eMailErr) {
-      console.error("[CONTACT ENQUIRY] Email system notification dispatch failure:", eMailErr);
+    // Await email dispatch and check success status
+    console.log("LOG:\nEMAIL SEND START");
+    const emailResult = await EmailService.sendEnquiryNotification({
+      name,
+      email,
+      organization: organization || null,
+      category: category || "General Inquiry",
+      message,
+      timestamp: payload.date
+    }, req.headers.host || "localhost:3000");
+
+    if (emailResult && emailResult.success) {
+      console.log("LOG:\nEMAIL SEND SUCCESS");
+    } else {
+      const errorDetail = emailResult?.error || "Unknown SMTP error occurred";
+      console.log(`LOG:\nEMAIL SEND FAILED + ERROR: ${errorDetail}`);
+      return res.status(500).json({ 
+        success: false, 
+        message: `Failed to dispatch administrative system email notification: ${errorDetail}`, 
+        error: errorDetail 
+      });
     }
 
     res.json({
@@ -1005,6 +1016,7 @@ app.post("/api/contact-submit", contactRateLimitMiddleware, async (req, res) => 
       data: payload
     });
   } catch (err: any) {
+    console.error(`LOG:\nEMAIL SEND FAILED + ERROR: ${err.message || String(err)}`);
     res.status(500).json({ success: false, message: err.message || "An error occurred writing your submission.", error: err.message || "An error occurred writing your submission." });
   }
 });
