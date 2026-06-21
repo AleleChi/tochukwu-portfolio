@@ -84,17 +84,7 @@ export default function App() {
       return false;
     }
     try {
-      const isDev = 
-        (import.meta as any).env?.DEV || 
-        window.location.hostname === "localhost" || 
-        window.location.hostname === "127.0.0.1" ||
-        window.location.href.includes("-dev-") ||
-        window.location.search.includes("dev=true");
-
-      if (isDev) {
-        return true;
-      }
-      return !sessionStorage.getItem("tochukwu_portfolio_preloaded");
+      return !sessionStorage.getItem("tochukwu_intro_seen");
     } catch {
       return true;
     }
@@ -292,16 +282,7 @@ export default function App() {
         {showPreloader && (
           <Preloader onComplete={() => {
             try {
-              const isDev = 
-                (import.meta as any).env?.DEV || 
-                window.location.hostname === "localhost" || 
-                window.location.hostname === "127.0.0.1" ||
-                window.location.href.includes("-dev-") ||
-                window.location.search.includes("dev=true");
-
-              if (!isDev) {
-                sessionStorage.setItem("tochukwu_portfolio_preloaded", "true");
-              }
+              sessionStorage.setItem("tochukwu_intro_seen", "true");
             } catch {}
             setShowPreloader(false);
           }} />
