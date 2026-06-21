@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Lora", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-brand-black: #1C1C1E;
+  --color-brand-dark: #121214;
+  --color-brand-gold: #C5A880;
+  --color-brand-antique-gold: #C9A84C;
+  --color-brand-cream: #FDFBF7;
+  --color-brand-muted: #8E8E93;
+}

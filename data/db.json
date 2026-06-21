@@ -1,0 +1,708 @@
+{
+  "profile": {
+    "name": "Tochukwu Ogunaka",
+    "title": "Strategic Communication Professional",
+    "shortBio": "Through strategic communication, public engagement, and storytelling, I help organizations communicate with purpose, build trust, and create meaningful connections.",
+    "email": "ogunakatochukwu@gmail.com",
+    "phone": "+234 816 539 9171",
+    "location": "Abuja, Nigeria",
+    "linkedin": "https://www.linkedin.com/in/ogunakatochukwu/",
+    "profileImage": "/input_file_1.png"
+  },
+  "hero": {
+    "headline": "Building clarity between organizations, communities, and people.",
+    "highlightedWord": "clarity",
+    "description": "Crafting high-impact strategic communications, coordinating public engagement initiatives, and directing media engagement strategies to foster trust and clear storytelling.",
+    "primaryCTA": "Explore Portfolio",
+    "secondaryCTA": "Get in Touch",
+    "heroImage": "/input_file_0.png",
+    "name": "Tochukwu Ogunaka",
+    "title": "Strategic Communication Professional",
+    "subtitle": "Building clarity between organizations, communities, and people.",
+    "heroStatement": "Crafting high-impact strategic communications, coordinating public engagement initiatives, and directing media engagement strategies to foster trust and clear storytelling.",
+    "ctaPrimary": "Explore Portfolio",
+    "ctaSecondary": "Get in Touch",
+    "imageUrl": "/input_file_0.png",
+    "personas": [
+      {
+        "id": 0,
+        "label": "Communication",
+        "portraitName": "Communication Professional",
+        "filePath": "/input_file_0.png",
+        "mood": "Professional, clear, collaborative",
+        "focus": "Supporting communication planning, clear messaging, and campaign initiatives"
+      },
+      {
+        "id": 1,
+        "label": "Media Specialist",
+        "portraitName": "Media Specialist",
+        "filePath": "/input_file_1.png",
+        "mood": "Experienced, engaging, detail-oriented",
+        "focus": "Coordinating media activities, developing press releases, and distributing updates"
+      },
+      {
+        "id": 2,
+        "label": "Storytelling",
+        "portraitName": "Storytelling Practitioner",
+        "filePath": "/input_file_3.png",
+        "mood": "Warm, human-centric, creative",
+        "focus": "Translating organization reports and ideas into relatable public stories"
+      },
+      {
+        "id": 3,
+        "label": "Advocacy",
+        "portraitName": "Advocacy Supporter",
+        "filePath": "/input_file_2.png",
+        "mood": "Grounded, community-first, dedicated",
+        "focus": "Structuring digital updates, awareness drives, and public outreach programs"
+      }
+    ]
+  },
+  "practice": {
+    "title": "COMMUNICATION PRACTICE // 02",
+    "pillars": [
+      {
+        "id": "01",
+        "title": "Strategic Communication",
+        "description": "Designing communication strategies that align organizational objectives with audience needs."
+      },
+      {
+        "id": "02",
+        "title": "Public Engagement",
+        "description": "Fostering strategic dialogue between institutions, communities, and the public."
+      },
+      {
+        "id": "03",
+        "title": "Media & Storytelling",
+        "description": "Formatting complex insights into stories that inform, connect, and drive public interest."
+      }
+    ]
+  },
+  "areasOfPractice": [
+    {
+      "title": "Strategic Communication",
+      "description": "Creating communication strategies that help organizations share their work clearly and connect with the people they serve."
+    },
+    {
+      "title": "Advocacy Communication",
+      "description": "Supporting advocacy campaigns and initiatives through storytelling, public messaging, and communication that encourages awareness and participation."
+    },
+    {
+      "title": "Stakeholder Engagement",
+      "description": "Helping organizations build stronger relationships with partners, communities, and the people their work impacts."
+    },
+    {
+      "title": "Media Relations",
+      "description": "Supporting media engagement, content development, and communication efforts that improve visibility and public understanding."
+    },
+    {
+      "title": "Public Engagement",
+      "description": "Creating opportunities for strategic alignment, public feedback, and partnership between organizations, communities, and the public."
+    }
+  ],
+  "experience": [
+    {
+      "year": "2026",
+      "role": "Communication Support",
+      "organization": "Greencheck Earth",
+      "location": "Climate Action Campaign",
+      "contribution": "Assisted with producing social media updates, writing environmental articles, and coordinating digital content for advocacy campaigns.",
+      "impact": "Helped raise public interest in local tree-planting programs and green school initiatives."
+    },
+    {
+      "year": "Active",
+      "role": "Communication Support",
+      "organization": "Coalition of Societies for the Rights of Older Persons in Nigeria",
+      "location": "Advocacy & Public Engagement",
+      "contribution": "Drafted press releases, managed email newsletters, and prepared advocacy materials to support campaign initiatives.",
+      "impact": "Amplified senior citizen advocacy campaigns, helping share key policy issues with local media outlets."
+    },
+    {
+      "year": "2025",
+      "role": "Communication Support",
+      "organization": "Young Advocates for a Sustainable and Inclusive Future (YASIF)",
+      "location": "Climate Action Advocacy",
+      "contribution": "Coordinated social media accounts, scheduled newsletter updates, and supported publicity for joint youth skills-building workshops.",
+      "impact": "Improved digital engagement and consolidated online community support for local climate action projects."
+    },
+    {
+      "year": "2025",
+      "role": "Communications & Marketing Intern",
+      "organization": "Commonwealth Youth Council",
+      "location": "Global Engagement",
+      "contribution": "Supported news distribution, helped coordinate regional newsletters, and drafted social media briefs for global youth initiatives.",
+      "impact": "Improved information sharing across diverse regional members and heightened visibility of youth programs."
+    },
+    {
+      "year": "2025",
+      "role": "Media Support",
+      "organization": "National Youth Service Corps (NYSC) Keffi",
+      "location": "Media Relations & Storytelling",
+      "contribution": "Coordinated the local media team, drafted news updates, and supported video and photography coverage for grassroots development programs.",
+      "impact": "Consolidated local program visibility and supported clear dialogue between youth corps members and host communities."
+    },
+    {
+      "year": "2024",
+      "role": "Community Engagement Support",
+      "organization": "Africa Youth Growth Foundation (AYGF)",
+      "location": "Public Engagement",
+      "contribution": "Developed content for public awareness programs, managed digital campaigns, and helped organize community outreach initiatives.",
+      "impact": "Enhanced messaging clarity for gender equality and education campaigns, increasing local community participation."
+    },
+    {
+      "year": "2023",
+      "role": "Content Support",
+      "organization": "Center for Fiscal Transparency & Public Integrity",
+      "location": "Governance & Advocacy",
+      "contribution": "Summarized budget documents and reports into simple public updates to support transparency initiatives.",
+      "impact": "Made public accountability data more accessible and understandable to local residents."
+    },
+    {
+      "year": "2020",
+      "role": "Media Support",
+      "organization": "Koinonia Global",
+      "location": "Strategic Communication & Storytelling",
+      "contribution": "Assisted with live broadcast coordination, audio adjustments, and online stream monitoring during community program events.",
+      "impact": "Helped deliver clear digital broadcasts and sustained consistent online connection for audiences."
+    }
+  ],
+  "selectedWork": [
+    {
+      "id": "yasif-ibm",
+      "organization": "Young Advocates for a Sustainable and Inclusive Future (YASIF)",
+      "title": "IAVE × IBM SkillsBuild Programme",
+      "role": "Head of Communications",
+      "focus": "Strategic communication & programme visibility",
+      "contributions": [
+        "Communication planning",
+        "Audience engagement",
+        "Programme visibility",
+        "Strategic content strategy"
+      ],
+      "impact": "Reached over 15,000 young people.",
+      "graphicHeader": "Project Overview",
+      "graphicTitle": "IBM × YASIF",
+      "graphicLabel1": "Audience Reached",
+      "graphicValue1": "15,000+",
+      "graphicDesc1": "Active learners engaged through multi-channel campaigns."
+    },
+    {
+      "id": "aygf-engagement",
+      "organization": "Africa Youth Growth Foundation",
+      "title": "Advocacy and Public Engagement Advocacy",
+      "role": "Programme Communication Officer",
+      "focus": "Advocacy communication & public engagement",
+      "contributions": [
+        "Content development",
+        "Photography",
+        "Newsletter production",
+        "Video production"
+      ],
+      "impact": "Improved engagement and public communication across critical advocacy programs.",
+      "graphicHeader": "Project Overview",
+      "graphicTitle": "Campaign Coverage",
+      "graphicItems": [
+        {
+          "label": "International Women's day",
+          "tag": "Focus Narrative"
+        },
+        {
+          "label": "16 Days of Activism",
+          "tag": "Civic Awareness"
+        },
+        {
+          "label": "FGM Awareness",
+          "tag": "Critical Response"
+        }
+      ]
+    },
+    {
+      "id": "nysc-media",
+      "organization": "National Youth Service Corps (NYSC)",
+      "title": "Media Operations and Documentary Leadership",
+      "role": "Head of Media",
+      "focus": "Media coordination & strategic storytelling",
+      "contributions": [
+        "Led a team of 35 media personnel",
+        "Produced documentaries",
+        "Photography",
+        "Editorial content formulation",
+        "Media operations supervision"
+      ],
+      "impact": "Strengthened media coverage, documentative records and public trust.",
+      "graphicHeader": "Project Overview",
+      "graphicTitle": "NYSC Media Guild",
+      "graphicLabel1": "TEAM CAPACITY",
+      "graphicValue1": "35",
+      "graphicDesc1": "Media personnel and specialists managed concurrently."
+    },
+    {
+      "id": "cyc-global",
+      "organization": "Commonwealth Youth Council",
+      "title": "International Communication support",
+      "role": "Communication and Marketing Intern",
+      "focus": "International communication support",
+      "contributions": [
+        "Newsletter design",
+        "Content planning",
+        "Communication materials setup"
+      ],
+      "impact": "Successfully supported dynamic international communication efforts.",
+      "graphicHeader": "Project Overview",
+      "graphicTitle": "Commonwealth Youth Council",
+      "graphicDesc1": "Delivering unified engagement strategies and narrative infrastructure to strengthen diplomatic networks across nations."
+    }
+  ],
+  "organisations": [
+    {
+      "logoName": "YASIF",
+      "fullName": "Young Advocates for a Sustainable and Inclusive Future",
+      "roleType": "Climate Action",
+      "region": "Advocacy",
+      "icon": "Leaf"
+    },
+    {
+      "logoName": "CYC",
+      "fullName": "Commonwealth Youth Council",
+      "roleType": "Youth Development",
+      "region": "Global Engagement",
+      "icon": "Compass"
+    },
+    {
+      "logoName": "AYGF",
+      "fullName": "Africa Youth Growth Foundation",
+      "roleType": "Youth Development",
+      "region": "Public Engagement",
+      "icon": "Users"
+    },
+    {
+      "logoName": "GREENCHECK",
+      "fullName": "Greencheck Earth Initiative",
+      "roleType": "Climate Action",
+      "region": "Advocacy",
+      "icon": "Shield"
+    },
+    {
+      "logoName": "KOINONIA",
+      "fullName": "Koinonia Global",
+      "roleType": "Leadership Development",
+      "region": "Strategic Communication",
+      "icon": "Anchor"
+    },
+    {
+      "logoName": "COSROPIN",
+      "fullName": "Coalition of Societies for the Rights of Older Persons in Nigeria",
+      "roleType": "Advocacy",
+      "region": "Public Engagement",
+      "icon": "Landmark"
+    },
+    {
+      "logoName": "TRANSPARENCY",
+      "fullName": "Center for Fiscal Transparency and Public Integrity",
+      "roleType": "Governance",
+      "region": "Advocacy",
+      "icon": "Scale"
+    },
+    {
+      "logoName": "TRINITY",
+      "fullName": "Trinity Media & Communications",
+      "roleType": "Media & Communications",
+      "region": "Strategic Communication",
+      "icon": "Radio"
+    }
+  ],
+  "recognition": {
+    "title": "Featured by MarketingWorld Magazine",
+    "description": "Featured for perspectives and contributions around communication, leadership, and storytelling.",
+    "areasHighlighted": [
+      {
+        "title": "Public Communication",
+        "description": "Developing clear, relatable communication channels and messages for public audiences."
+      },
+      {
+        "title": "Storytelling & Leadership",
+        "description": "Encouraging leadership growth and mentoring youth advocates in community programs."
+      }
+    ],
+    "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=1200",
+    "caption": "MARKETINGWORLD MAGAZINE // FEATURE"
+  },
+  "education": {
+    "degree": "Bachelor of Arts in English and Literature",
+    "institution": "University of Benin, Nigeria",
+    "period": "B.A. (Hons)",
+    "description": "Studied language structure, rhetoric, writing logic, media critique, and creative storytelling strategies, establishing a strong foundation for practical communication and public messaging."
+  },
+  "certifications": [
+    {
+      "institution": "UNICEF",
+      "focus": "Communication Information in Practice",
+      "description": "Completed study in child rights advocacy, community awareness models, and social change communication.",
+      "verification": "Certificate"
+    },
+    {
+      "institution": "HubSpot",
+      "focus": "Digital Marketing",
+      "description": "Training in planning campaigns, content creation, and messaging for online communities.",
+      "verification": "Certification"
+    },
+    {
+      "institution": "HP LIFE",
+      "focus": "Effective Communication",
+      "description": "Covered foundations of professional outreach, business writing, and modern presentation tools.",
+      "verification": "Certificate"
+    },
+    {
+      "institution": "GOTNI Leadership Centre",
+      "focus": "Leadership Development",
+      "description": "Participated in public speaking, communication ethics, and community leadership workshops.",
+      "verification": "Certificate"
+    },
+    {
+      "institution": "Digital Marketing Skill Institute",
+      "focus": "Digital Marketing Strategy",
+      "description": "Training in search engine optimization, content tracking, and digital campaign metrics.",
+      "verification": "Certificate"
+    },
+    {
+      "institution": "AQ Skills",
+      "focus": "Professional Workplace Communication",
+      "description": "Learned team cooperation techniques, workspace verbal logic, and conflict resolution basics.",
+      "verification": "Certificate"
+    },
+    {
+      "institution": "ENACTUS",
+      "focus": "Social Entrepreneurship & Community Initiatives",
+      "description": "Supported community outreach, social project design, and local environmental awareness efforts.",
+      "verification": "Certificate"
+    },
+    {
+      "institution": "Koinonia School of Ministry",
+      "focus": "Thought Leadership & Public Communication",
+      "description": "Studies in public speech, character, community development, and leadership ethics.",
+      "verification": "Certificate"
+    },
+    {
+      "institution": "Simplilearn",
+      "focus": "Project Management Foundations",
+      "description": "Studied task scheduling, project tracking methods, and basic team coordination tools.",
+      "verification": "Certificate"
+    }
+  ],
+  "articles": [
+    {
+      "id": 1,
+      "title": "Communication Beyond Visibility",
+      "subtitle": "Why being seen is not the same as being understood.",
+      "description": "Communication is not only about reaching more people. It is about helping people understand, connect, and respond to ideas that matter.",
+      "date": "June 2026",
+      "readTime": "6 Min Read",
+      "imageUrl": "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&q=80&w=1200",
+      "category": "Communication",
+      "sections": [
+        {
+          "heading": "More Than Visibility",
+          "text": "Communication is not only about reaching more people. It is about helping people understand, connect, and respond to ideas that matter."
+        },
+        {
+          "heading": "The Limits of Reach",
+          "text": "In today's world, organizations often measure communication through attention, reach, and visibility. But being visible does not always mean being understood."
+        },
+        {
+          "heading": "Creating Space",
+          "text": "Strong communication goes beyond sharing information. It requires listening, providing context, and creating channels for genuine engagement."
+        },
+        {
+          "heading": "Building Connections",
+          "text": "When organizations focus only on announcements and exposure, they may miss the opportunity to build genuine relationships with the people they serve."
+        },
+        {
+          "heading": "From Messages to Trust",
+          "text": "Good communication turns messages into conversations and conversations into trust."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Trust Is Built Before It Is Measured",
+      "subtitle": "The importance of consistent communication.",
+      "description": "Trust is not created during a crisis. It is built through everyday communication.",
+      "date": "April 2026",
+      "readTime": "5 Min Read",
+      "imageUrl": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=1200",
+      "category": "Trust",
+      "sections": [
+        {
+          "heading": "Everyday Foundation",
+          "text": "Trust is not created during a crisis. It is built through everyday communication."
+        },
+        {
+          "heading": "Honest Updates",
+          "text": "Organizations strengthen relationships when they communicate clearly, share updates honestly, and keep people informed."
+        },
+        {
+          "heading": "Preventing Confusion",
+          "text": "Waiting until a challenge happens before communicating can create confusion and weaken confidence."
+        },
+        {
+          "heading": "Inclusion and Connection",
+          "text": "Consistent communication helps people understand decisions, feel included, and build stronger connections with organizations."
+        },
+        {
+          "heading": "Intentional Actions",
+          "text": "Trust grows through small, intentional actions repeated over time."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "The Role of Storytelling in Public Engagement",
+      "subtitle": "Connecting ideas with human experiences.",
+      "description": "People connect with stories because stories help them see the human side of an idea.",
+      "date": "February 2026",
+      "readTime": "4 Min Read",
+      "imageUrl": "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&q=80&w=1200",
+      "category": "Storytelling",
+      "sections": [
+        {
+          "heading": "The Human Connection",
+          "text": "People connect with stories because stories help them see the human side of an idea."
+        },
+        {
+          "heading": "Adding Context",
+          "text": "Organizations often communicate through information, reports, and data. While these are important, people also need context and experiences they can relate to."
+        },
+        {
+          "heading": "Simplifying Complexity",
+          "text": "Storytelling helps explain complex issues in simple ways. It allows communities to understand why something matters and how they can participate."
+        },
+        {
+          "heading": "Connecting with Meaning",
+          "text": "Effective storytelling does not replace facts. It helps people connect with the meaning behind them."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Leadership Requires Communication",
+      "subtitle": "Why direction works best when people understand the purpose behind it.",
+      "description": "Leadership is not only about making decisions. It is also about communicating those decisions clearly.",
+      "date": "January 2026",
+      "readTime": "5 Min Read",
+      "imageUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200",
+      "category": "Leadership",
+      "sections": [
+        {
+          "heading": "Communicating Decisions",
+          "text": "Leadership is not only about making decisions. It is also about communicating those decisions clearly."
+        },
+        {
+          "heading": "Understanding Purpose",
+          "text": "Teams work better when they understand the purpose behind their responsibilities and feel comfortable sharing ideas."
+        },
+        {
+          "heading": "Feedback and Questions",
+          "text": "Good leaders create room for questions, feedback, and honest conversations."
+        },
+        {
+          "heading": "Shared Goals",
+          "text": "Communication helps leaders build trust, support collaboration, and move people toward shared goals."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Advocacy Is More Than Awareness",
+      "subtitle": "Moving from attention to meaningful action.",
+      "description": "Awareness is an important part of advocacy, but it is only the beginning.",
+      "date": "December 2025",
+      "readTime": "6 Min Read",
+      "imageUrl": "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&q=80&w=1200",
+      "category": "Advocacy",
+      "sections": [
+        {
+          "heading": "Beyond Awareness",
+          "text": "Awareness is an important part of advocacy, but it is only the beginning."
+        },
+        {
+          "heading": "Meaningful Engagement",
+          "text": "Real impact happens when people understand an issue, feel connected to it, and have opportunities to participate."
+        },
+        {
+          "heading": "Action and Communication",
+          "text": "Successful advocacy combines clear communication with practical action."
+        },
+        {
+          "heading": "Creating Solutions",
+          "text": "The goal is not only to inform people, but to help them become part of the solution."
+        }
+      ]
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "quote": "Professional recommendations and references can be provided upon request from senior executives, non-profits, and youth programs Tochukwu has supported in Abuja, Nigeria.",
+      "name": "Professional Reference",
+      "role": "Reference Desk",
+      "organization": "Available Upon Request",
+      "category": "PROFESSIONAL REFERENCE"
+    },
+    {
+      "id": 2,
+      "quote": "Feedback and references from community engagement campaigns highlighting her contribution to localized advocacy campaigns and public storytelling projects.",
+      "name": "Advocacy Campaign Lead",
+      "role": "NGO Project Coordinator",
+      "organization": "Community Mobilization",
+      "category": "PUBLIC ADVOCACY"
+    },
+    {
+      "id": 3,
+      "quote": "References and reviews from youth dialogue panels, leadership events, and media training sessions she has helped organize and facilitate.",
+      "name": "Youth Leadership Coordinator",
+      "role": "Program Director",
+      "organization": "Youth Councils",
+      "category": "TRAINING & LEADERSHIP"
+    },
+    {
+      "id": 4,
+      "quote": "Evaluations and feedback from non-profit and community media teams she has collaborated with to support organizational visibility and clear communication.",
+      "name": "Media Operations Lead",
+      "role": "Communications Manager",
+      "organization": "Organizational Communications",
+      "category": "ORGANIZATIONAL VISIBILITY"
+    }
+  ],
+  "gallery": [
+    {
+      "id": 1,
+      "title": "Speaking Session: Youth Engagement",
+      "category": "Speaking",
+      "location": "Abuja Session Hall",
+      "year": "2025",
+      "description": "Speaking on public communication, community feedback, and youth engagement in advocacy campaigns.",
+      "imageUrl": "https://images.unsplash.com/photo-1544531516-a5e34b224679?auto=format&fit=crop&q=80&w=1200"
+    },
+    {
+      "id": 2,
+      "title": "Media Team Planning Briefing",
+      "category": "Training",
+      "location": "AYGF Campaign Office",
+      "year": "2024",
+      "description": "Coordinating communication plans and campaign materials with team members during a social impact campaign.",
+      "imageUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=1200"
+    },
+    {
+      "id": 3,
+      "title": "International Women's Day Campaign",
+      "category": "Campaigns",
+      "location": "NGO Network Office",
+      "year": "2024",
+      "description": "Supporting public awareness and community mobilization efforts to highlight women's rights and education.",
+      "imageUrl": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=1200"
+    },
+    {
+      "id": 4,
+      "title": "Youth Secretariat Discussion",
+      "category": "Events",
+      "location": "Abuja Youth Secretariat",
+      "year": "2025",
+      "description": "Participating in discussions and sessions focused on youth empowerment and professional development.",
+      "imageUrl": "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80&w=1200"
+    },
+    {
+      "id": 5,
+      "title": "Documentary Storytelling Session",
+      "category": "Media",
+      "location": "NYSC Media Division",
+      "year": "2025",
+      "description": "Supporting photography curation, video logging, and script editing for a local community impact documentary.",
+      "imageUrl": "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200"
+    },
+    {
+      "id": 6,
+      "title": "Public Accountability Panel",
+      "category": "Events",
+      "location": "Public Dialogue Forum",
+      "year": "2023",
+      "description": "Assisting with coordinating panel logistics and press briefs for a public resource accountability forum.",
+      "imageUrl": "https://images.unsplash.com/photo-1551836022-b5b37d1a2e20?auto=format&fit=crop&q=80&w=1200"
+    },
+    {
+      "id": 7,
+      "title": "Environmental Response Campaign Strategy",
+      "category": "Campaigns",
+      "location": "Greencheck Earth",
+      "year": "2026",
+      "description": "Creating digital content and simple graphics to share climate awareness and local environmental protection efforts.",
+      "imageUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1200"
+    }
+  ],
+  "speaking": {
+    "title": "Speaking, Media & Leadership",
+    "description": "Beyond communication projects, Tochukwu contributes to conversations around leadership, storytelling, advocacy, and community development.",
+    "blocks": [
+      {
+        "category": "Leadership",
+        "title": "Leadership",
+        "description": "Supporting communication activities, coordinating content, and contributing to campaigns and public-facing initiatives."
+      },
+      {
+        "category": "Training & Mentorship",
+        "title": "Training & Mentorship",
+        "description": "Supporting learning in communication, storytelling, digital engagement, and professional growth."
+      },
+      {
+        "category": "Speaking Engagements",
+        "title": "Public Speaking",
+        "description": "Participating in conversations around communication, leadership, youth development, and social impact."
+      },
+      {
+        "category": "Institutional Engagement",
+        "title": "Institutional Engagement",
+        "description": "Working with organizations and communities to support communication initiatives."
+      }
+    ],
+    "image1": "/input_file_3.png",
+    "image2": "/input_file_2.png"
+  },
+  "contactSubmissions": [
+    {
+      "id": 1781985410857,
+      "name": "Alele Chi",
+      "email": "alelechi20@gmail.com",
+      "subject": "Inquiry: Communication Strategy ",
+      "message": "Hi Tochi, \nThis is Chigozie...... Just another test email. ",
+      "date": "2026-06-20T19:56:50.857Z",
+      "organization": null,
+      "category": "Communication Strategy",
+      "status": "New",
+      "createdAt": "2026-06-20T19:56:50.860Z"
+    }
+  ],
+  "media": [],
+  "adminUsers": [
+    {
+      "id": "admin-1",
+      "name": "Tochukwu Ogunaka",
+      "email": "ogunakatochukwu@gmail.com",
+      "passwordHash": "$2b$10$u5raGJwOgnSRP1gnMvA5TOE9INoj7RFJzZsPwYcxHAh52K04xoePu",
+      "role": "Studio Owner",
+      "createdAt": "2026-06-20T19:48:23.576Z",
+      "updatedAt": "2026-06-20T19:48:23.577Z",
+      "lastLogin": null,
+      "tokenVersion": "v1"
+    },
+    {
+      "id": "admin-2",
+      "name": "Alelechi",
+      "email": "alelechi17@gmail.com",
+      "passwordHash": "$2b$10$u5raGJwOgnSRP1gnMvA5TOE9INoj7RFJzZsPwYcxHAh52K04xoePu",
+      "role": "Administrator",
+      "createdAt": "2026-06-20T19:48:23.577Z",
+      "updatedAt": "2026-06-20T19:48:23.577Z",
+      "lastLogin": null,
+      "tokenVersion": "v1"
+    }
+  ]
+}
