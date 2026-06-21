@@ -22,6 +22,30 @@ function getCloudinaryPublicId(url: string): string | null {
 export const app = express();
 const PORT = 3000;
 
+// Custom CORS middleware to support Vercel frontend requests and local development
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "https://tochukwu-portfolio-five.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173",
+  ];
+  const origin = req.headers.origin;
+  if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app") || origin.includes(".run.app") || origin.includes("ais-"))) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Authorization,Accept");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Normalize req.url/originalUrl for consistent routing on Vercel and Express
 app.use((req, res, next) => {
   const targetUrl = req.originalUrl || req.url;
