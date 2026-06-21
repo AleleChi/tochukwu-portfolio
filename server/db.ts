@@ -336,6 +336,10 @@ export async function initializeDatabase() {
   console.log("DATABASE CONNECTION START");
   const pool = getPool();
   if (!pool) {
+    if (process.env.NODE_ENV === "production" || process.env.VERCEL) {
+      console.error("[DB] CRITICAL: DATABASE_URL environment variable is missing on Vercel / Production deployment.");
+      throw new Error("DATABASE_URL environment variable is missing.");
+    }
     console.warn("[DB] No DATABASE_URL environment variable provided. Running on local files fallback.");
     // Fallback to local db.json
     try {

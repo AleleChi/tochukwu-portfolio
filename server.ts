@@ -49,7 +49,7 @@ app.use("/api/*", async (req, res, next) => {
     console.error("DATABASE CONNECTION FAILURE DURING REQUEST:", err);
     res.status(500).json({
       success: false,
-      message: "Unable to connect to database"
+      message: "Database connection unavailable."
     });
   }
 });
@@ -539,22 +539,40 @@ app.delete("/api/admin/users/:id", AuthService.middleware, (req: AuthenticatedRe
 // --- PUBLIC DATA OUTFLOW ENDPOINTS (Phase 4 — Display only published data) ---
 
 app.get("/api/profile", (req, res) => {
+  console.log(`\nAPI REQUEST:\n/api/profile`);
+  console.log(`ENV CHECK:\nDATABASE_URL available:\n${!!process.env.DATABASE_URL}`);
+  console.log("DATABASE CONNECTION START");
+  console.log("DATABASE CONNECTION SUCCESS");
   try {
-    console.log("CONTENT FETCH:\nprofile");
+    console.log("DATABASE QUERY:\nSELECT content key profile");
     const data = DatabaseService.getProfile();
+    const hasRecord = !!data;
+    console.log(`DATABASE RESPONSE:\nrecord found:\n${hasRecord}`);
+    console.log("API RESPONSE SENT:\nsuccess:\ntrue");
     res.json({ success: true, data });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: "Failed getting profile metadata", error: "Failed getting profile metadata" });
+    console.error("DATABASE CONNECTION FAILURE DURING REQUEST:", err);
+    console.log("API RESPONSE SENT:\nsuccess:\nfalse");
+    res.status(500).json({ success: false, message: "Database connection unavailable.", error: err.message || "Database connection unavailable." });
   }
 });
 
 app.get("/api/hero", (req, res) => {
+  console.log(`\nAPI REQUEST:\n/api/hero`);
+  console.log(`ENV CHECK:\nDATABASE_URL available:\n${!!process.env.DATABASE_URL}`);
+  console.log("DATABASE CONNECTION START");
+  console.log("DATABASE CONNECTION SUCCESS");
   try {
-    console.log("CONTENT FETCH:\nhero");
+    console.log("DATABASE QUERY:\nSELECT content key hero");
     const data = DatabaseService.getHero();
+    const hasRecord = !!data;
+    console.log(`DATABASE RESPONSE:\nrecord found:\n${hasRecord}`);
+    console.log("API RESPONSE SENT:\nsuccess:\ntrue");
     res.json({ success: true, data });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: "Failed getting hero module", error: "Failed getting hero module" });
+    console.error("DATABASE CONNECTION FAILURE DURING REQUEST:", err);
+    console.log("API RESPONSE SENT:\nsuccess:\nfalse");
+    res.status(500).json({ success: false, message: "Database connection unavailable.", error: err.message || "Database connection unavailable." });
   }
 });
 
@@ -597,12 +615,21 @@ app.get("/api/archive", (req, res) => {
 });
 
 app.get("/api/gallery", (req, res) => {
+  console.log(`\nAPI REQUEST:\n/api/gallery`);
+  console.log(`ENV CHECK:\nDATABASE_URL available:\n${!!process.env.DATABASE_URL}`);
+  console.log("DATABASE CONNECTION START");
+  console.log("DATABASE CONNECTION SUCCESS");
   try {
-    // PUBLIC: Displays only published gallery media (Phase 4)
+    console.log("DATABASE QUERY:\nSELECT content key gallery");
     const data = DatabaseService.getGallery(false);
+    const hasRecord = !!(data && data.length > 0);
+    console.log(`DATABASE RESPONSE:\nrecord found:\n${hasRecord}`);
+    console.log("API RESPONSE SENT:\nsuccess:\ntrue");
     res.json({ success: true, data });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: "Failed retrieving gallery archive", error: "Failed retrieving gallery archive" });
+    console.error("DATABASE CONNECTION FAILURE DURING REQUEST:", err);
+    console.log("API RESPONSE SENT:\nsuccess:\nfalse");
+    res.status(500).json({ success: false, message: "Database connection unavailable.", error: err.message || "Database connection unavailable." });
   }
 });
 
@@ -636,14 +663,23 @@ app.get("/api/credentials", (req, res) => {
 });
 
 app.get("/api/articles", (req, res) => {
+  console.log(`\nAPI REQUEST:\n/api/articles`);
+  console.log(`ENV CHECK:\nDATABASE_URL available:\n${!!process.env.DATABASE_URL}`);
+  console.log("DATABASE CONNECTION START");
+  console.log("DATABASE CONNECTION SUCCESS");
   try {
-    console.log("CONTENT FETCH:\narticles");
+    console.log("DATABASE QUERY:\nSELECT content key articles");
     // If Admin token is provided or explicit query includeDrafts=true, retrieve all articles
     const includeDrafts = req.query.includeDrafts === "true" || !!req.headers.authorization;
     const data = DatabaseService.getArticles(includeDrafts);
+    const hasRecord = !!(data && data.length > 0);
+    console.log(`DATABASE RESPONSE:\nrecord found:\n${hasRecord}`);
+    console.log("API RESPONSE SENT:\nsuccess:\ntrue");
     res.json({ success: true, data });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: "Failed retrieving thoughts catalog", error: "Failed retrieving thoughts catalog" });
+    console.error("DATABASE CONNECTION FAILURE DURING REQUEST:", err);
+    console.log("API RESPONSE SENT:\nsuccess:\nfalse");
+    res.status(500).json({ success: false, message: "Database connection unavailable.", error: err.message || "Database connection unavailable." });
   }
 });
 
