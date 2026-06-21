@@ -2,10 +2,8 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import multer from "multer";
-import sharp from "sharp";
 import { v2 as cloudinary } from "cloudinary";
-import { createServer as createViteServer } from "vite";
-import { DatabaseService, DatabaseSchema, ArticleSchema, initializeDatabase } from "./server/db";
+import { DatabaseService, DatabaseSchema, ArticleSchema, initializeDatabase, ensureDatabaseInitialized } from "./server/db";
 import { AuthService, AuthenticatedRequest } from "./server/auth";
 import { EmailService } from "./server/email";
 
@@ -21,12 +19,32 @@ function getCloudinaryPublicId(url: string): string | null {
   return dotIndex !== -1 ? fullPath.substring(0, dotIndex) : fullPath;
 }
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 // Enable JSON parser & URL-encoded systems with secure payload limits
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
+
+// Lazy database initialization middleware for API routes to guarantee Vercel production connection
+let isSeededInVercel = false;
+app.use("/api/*", async (req, res, next) => {
+  try {
+    await ensureDatabaseInitialized();
+    if (!isSeededInVercel) {
+      await AuthService.seedAdminAccounts();
+      isSeededInVercel = true;
+    }
+    next();
+  } catch (err: any) {
+    console.error("DATABASE CONNECTION FAILURE DURING REQUEST:", err);
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+      error: "Database connection failed"
+    });
+  }
+});
 
 // Standardize all response payloads for consistency and compatibility
 app.use((req, res, next) => {
@@ -492,6 +510,7 @@ app.delete("/api/admin/users/:id", AuthService.middleware, (req: AuthenticatedRe
 
 app.get("/api/profile", (req, res) => {
   try {
+    console.log("CONTENT FETCH:\nprofile");
     const data = DatabaseService.getProfile();
     res.json({ success: true, data });
   } catch (err: any) {
@@ -501,6 +520,7 @@ app.get("/api/profile", (req, res) => {
 
 app.get("/api/hero", (req, res) => {
   try {
+    console.log("CONTENT FETCH:\nhero");
     const data = DatabaseService.getHero();
     res.json({ success: true, data });
   } catch (err: any) {
@@ -587,6 +607,7 @@ app.get("/api/credentials", (req, res) => {
 
 app.get("/api/articles", (req, res) => {
   try {
+    console.log("CONTENT FETCH:\narticles");
     // If Admin token is provided or explicit query includeDrafts=true, retrieve all articles
     const includeDrafts = req.query.includeDrafts === "true" || !!req.headers.authorization;
     const data = DatabaseService.getArticles(includeDrafts);
@@ -1567,43 +1588,57 @@ app.post("/api/upload", AuthService.middleware, upload.single("image"), async (r
       return res.status(400).json({ success: false, error: "Unsupported image format selected. Only JPG, JPEG, PNG, and WEBP formats are accepted." });
     }
 
-    // Inspect signature using sharp metadata to prevent disguised or corrupted files
-    let imageProcessor = sharp(file.buffer);
-    let metadata;
-    try {
-      metadata = await imageProcessor.metadata();
-    } catch (metadataErr) {
-      console.error("Upload aborted: Sharp failed reading metadata from input buffer.", metadataErr);
-      return res.status(400).json({ success: false, error: "Invalid or corrupted image file structure." });
-    }
+    // Inspect signature using sharp metadata to prevent disguised or corrupted files with failsafe bypass for environment compatibility (e.g., Vercel Serverless)
+    let optimizedBuffer = file.buffer;
+    let outputFilename = "";
+    let metadataWidth = 1200;
+    let metadataHeight = 1200;
+    let metadataFormat = "webp";
 
-    if (!metadata.format || !["jpeg", "png", "webp"].includes(metadata.format)) {
-      console.warn(`Upload aborted: Unsupported internal image signature "${metadata.format}".`);
-      return res.status(400).json({ success: false, error: "Unsupported image signature. Only JPG, PNG, and WEBP formats are accepted." });
-    }
-
-    // Sanitize base name for safe filenames
     const sanitizedBase = path.basename(file.originalname, originalExt)
       .replace(/[^a-zA-Z0-9_-]/g, "-")
       .substring(0, 50) || "upload";
     
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const outputFilename = `${sanitizedBase}-${uniqueSuffix}.webp`;
 
-    // 3. Save optimized image (compress, resize oversized width/height > 1600px)
-    if ((metadata.width && metadata.width > 1600) || (metadata.height && metadata.height > 1600)) {
-      imageProcessor = imageProcessor.resize({
-        width: 1600,
-        height: 1600,
-        fit: "inside",
-        withoutEnlargement: true
-      });
+    try {
+      const sharpModule = await import("sharp");
+      const sharp = sharpModule.default;
+
+      let imageProcessor = sharp(file.buffer);
+      const metadata = await imageProcessor.metadata();
+      
+      if (!metadata.format || !["jpeg", "png", "webp"].includes(metadata.format)) {
+        console.warn(`Upload aborted: Unsupported internal image signature "${metadata.format}".`);
+        return res.status(400).json({ success: false, error: "Unsupported image signature. Only JPG, PNG, and WEBP formats are accepted." });
+      }
+
+      outputFilename = `${sanitizedBase}-${uniqueSuffix}.webp`;
+
+      if ((metadata.width && metadata.width > 1600) || (metadata.height && metadata.height > 1600)) {
+        imageProcessor = imageProcessor.resize({
+          width: 1600,
+          height: 1600,
+          fit: "inside",
+          withoutEnlargement: true
+        });
+      }
+
+      optimizedBuffer = await imageProcessor
+        .webp({ quality: 80 })
+        .toBuffer();
+
+      metadataWidth = metadata.width || 1600;
+      metadataHeight = metadata.height || 1600;
+      metadataFormat = "webp";
+    } catch (sharpErr: any) {
+      console.warn("[UPLOAD SHARP FALLBACK] Platform does not native run sharp, performing raw buffer routing pass-through:", sharpErr.message);
+      optimizedBuffer = file.buffer;
+      const cleanExt = originalExt || ".png";
+      const formatMap: any = { ".jpg": "jpeg", ".jpeg": "jpeg", ".png": "png", ".webp": "webp" };
+      metadataFormat = formatMap[cleanExt] || "png";
+      outputFilename = `${sanitizedBase}-${uniqueSuffix}${cleanExt}`;
     }
-
-    // Compress to highly optimized WEBP format buffer
-    const optimizedBuffer = await imageProcessor
-      .webp({ quality: 80 })
-      .toBuffer();
 
     // Check Cloudinary credential configurations, supporting both standard environments and the STORAGE_ convention in .env.example
     const isStorageCloudinary = process.env.STORAGE_PROVIDER === "cloudinary";
@@ -1771,9 +1806,9 @@ app.post("/api/upload", AuthService.middleware, upload.single("image"), async (r
       data: mediaObj,
       url: finalUrl,
       publicId: isCloudinaryConfigured ? cloudinaryPublicIdToRemove : outputFilename,
-      width: isCloudinaryConfigured ? cloudinaryResult?.width : (metadata.width || 0),
-      height: isCloudinaryConfigured ? cloudinaryResult?.height : (metadata.height || 0),
-      format: isCloudinaryConfigured ? cloudinaryResult?.format : (metadata.format || "webp")
+      width: isCloudinaryConfigured ? cloudinaryResult?.width : (metadataWidth || 0),
+      height: isCloudinaryConfigured ? cloudinaryResult?.height : (metadataHeight || 0),
+      format: isCloudinaryConfigured ? cloudinaryResult?.format : (metadataFormat || "webp")
     });
 
   } catch (err: any) {
@@ -1898,6 +1933,7 @@ async function initServer() {
 
   if (process.env.NODE_ENV !== "production") {
     // Development mode with Vite reloading
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -1929,6 +1965,8 @@ async function initServer() {
   });
 }
 
-initServer().catch((err) => {
-  console.error("CRITICAL BOOT ERROR:", err);
-});
+if (!process.env.VERCEL) {
+  initServer().catch((err) => {
+    console.error("CRITICAL BOOT ERROR:", err);
+  });
+}

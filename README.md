@@ -1,90 +1,20 @@
-# Tochukwu Ogunaka Portfolio & Communication Platform
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
 
-A premium personal brand website and content management system built for Tochukwu Ogunaka — Communication Professional & Media Specialist.
+# Run and deploy your AI Studio app
 
-The platform combines a public-facing editorial portfolio with a private administration dashboard for managing:
+This contains everything you need to run your app locally.
 
-- Profile information
-- Professional experience
-- Articles and thoughts
-- Visual stories
-- Recognition
-- Speaking engagements
-- Media assets
-- Contact enquiries
+View your app in AI Studio: https://ai.studio/apps/bf305c93-8ae2-47df-83c6-dc61398621c1
 
+## Run Locally
 
----
-
-# Project Overview
-
-This application is designed as a professional communication portfolio platform.
-
-The goals are:
-
-- Present Tochukwu Ogunaka's professional identity
-- Showcase communication, storytelling, advocacy, and leadership work
-- Allow content updates without editing code
-- Manage images and articles through an admin dashboard
-- Maintain a scalable production architecture
+**Prerequisites:**  Node.js
 
 
----
-
-# Technology Stack
-
-## Frontend
-
-- React
-- TypeScript
-- Vite
-- Modern component architecture
-
-
-## Backend
-
-- API routes
-- Secure content management endpoints
-- Authentication handling
-- Media upload processing
-
-
-## Database
-
-Production database:
-
-Neon PostgreSQL
-
-
-Stored content:
-
-- Profile
-- Hero information
-- Articles
-- Experience
-- Recognition
-- Gallery
-- Speaking
-- Contact messages
-- Admin users
-
-
-## Media Storage
-
-Cloudinary
-
-
-Used for:
-
-- Profile images
-- Hero images
-- Gallery images
-- Article images
-- Speaking images
-- Recognition images
-
-
----
-
-# Architecture
-
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

@@ -307,6 +307,7 @@ const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
 let dbPool: any = null;
 let memoryDb: IDatabase | null = null;
+let initPromise: Promise<void> | null = null;
 
 export function getPool() {
   if (!dbPool && connectionString) {
@@ -320,7 +321,19 @@ export function getPool() {
   return dbPool;
 }
 
+export function ensureDatabaseInitialized(): Promise<void> {
+  if (memoryDb) return Promise.resolve();
+  if (!initPromise) {
+    initPromise = initializeDatabase().catch(err => {
+      initPromise = null;
+      throw err;
+    });
+  }
+  return initPromise;
+}
+
 export async function initializeDatabase() {
+  console.log("DATABASE CONNECTION START");
   const pool = getPool();
   if (!pool) {
     console.warn("[DB] No DATABASE_URL environment variable provided. Running on local files fallback.");
@@ -336,6 +349,7 @@ export async function initializeDatabase() {
     } catch (e) {
       memoryDb = DatabaseService.normalize({});
     }
+    console.log("DATABASE CONNECTED SUCCESSFULLY (Fallback Memory/File DB)");
     return;
   }
 
@@ -350,6 +364,7 @@ export async function initializeDatabase() {
       )
     `);
     console.log("[DB] Table 'portfolio_cms' verified in Neon PostgreSQL.");
+    console.log("DATABASE CONNECTED SUCCESSFULLY");
 
     const { rows } = await pool.query("SELECT key, data FROM portfolio_cms");
     const postgresData: any = {};
