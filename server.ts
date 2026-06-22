@@ -26,13 +26,11 @@ const PORT = 3000;
 app.use((req, res, next) => {
   const allowedOrigins = [
     "https://tochukwu-portfolio-five.vercel.app",
-     "https://tochi1.netlify.app", 
     "http://localhost:3000",
     "http://localhost:5173",
   ];
-
   const origin = req.headers.origin;
-  if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app") || origin.endsWith(".netlify.app") || origin.includes(".run.app") || origin.includes("ais-"))) {
+  if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app") || origin.includes(".run.app") || origin.includes("ais-"))) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   } else {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -1026,30 +1024,29 @@ app.post("/api/contact-submit", contactRateLimitMiddleware, async (req, res) => 
     });
     console.log("LOG:\nDATABASE SAVE SUCCESS");
 
-    // Send immediate email notification to matching admins (Step 2)
-    // Await email dispatch and check success status
+    // Send email notification in background - do NOT block user response
     console.log("LOG:\nEMAIL SEND START");
-    const emailResult = await EmailService.sendEnquiryNotification({
+    EmailService.sendEnquiryNotification({
       name,
       email,
       organization: organization || null,
       category: category || "General Inquiry",
       message,
       timestamp: payload.date
-    }, req.headers.host || "localhost:3000");
+    }, req.headers.host || "localhost:3000")
+    .then(emailResult => {
+      if (emailResult && emailResult.success) {
+        console.log("LOG:\nEMAIL SEND SUCCESS");
+      } else {
+        const errorDetail = emailResult?.error || "Unknown email error occurred";
+        console.log(`LOG:\nEMAIL SEND FAILED + ERROR: ${errorDetail}`);
+      }
+    })
+    .catch(err => {
+      console.error(`LOG:\nEMAIL SEND FAILED + ERROR: ${err.message || String(err)}`);
+    });
 
-    if (emailResult && emailResult.success) {
-      console.log("LOG:\nEMAIL SEND SUCCESS");
-    } else {
-      const errorDetail = emailResult?.error || "Unknown SMTP error occurred";
-      console.log(`LOG:\nEMAIL SEND FAILED + ERROR: ${errorDetail}`);
-      return res.status(500).json({ 
-        success: false, 
-        message: `Failed to dispatch administrative system email notification: ${errorDetail}`, 
-        error: errorDetail 
-      });
-    }
-
+    // Respond to user immediately — don't wait for email
     res.json({
       success: true,
       message: "Your message has been received and stored in Tochukwu's secure administrative log.",
