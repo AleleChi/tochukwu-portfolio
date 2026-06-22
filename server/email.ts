@@ -272,9 +272,9 @@ Communication Professional & Media Specialist`;
     try {
       const { transporter, smtpUser } = await createGmailTransporter();
 
-      console.log("[SMTP] Verifying connection...");
-      await transporter.verify();
-      console.log("SMTP CONNECTION SUCCESS");
+      // console.log("[SMTP] Verifying connection...");
+      // await transporter.verify();
+      // console.log("SMTP CONNECTION SUCCESS");
 
       const info = await transporter.sendMail({
         from: `Tochukwu Website <${smtpUser}>`,
