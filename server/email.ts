@@ -11,6 +11,132 @@ export interface EmailPayload {
 
 export class EmailService {
   /**
+   * Verify SMTP connection properties and log configuration presence securely.
+   */
+  public static async verifySmtpConnection() {
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const smtpFrom = process.env.SMTP_FROM;
+
+    console.log(`SMTP_HOST loaded: ${!!smtpHost}`);
+    console.log(`SMTP_USER loaded: ${!!smtpUser}`);
+    console.log(`SMTP_PASS loaded: ${!!smtpPass}`);
+    console.log(`SMTP_FROM loaded: ${!!smtpFrom}`);
+
+    if (!smtpHost || !smtpUser || !smtpPass) {
+      console.log("[SMTP] Skipping SMTP check: SMTP environment variables are not fully configured.");
+      return;
+    }
+
+    try {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
+        secure: (process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587) === 465,
+        auth: {
+          user: smtpUser,
+          pass: smtpPass
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+      await transporter.verify();
+      console.log("SMTP CONNECTION SUCCESS");
+    } catch (err: any) {
+      console.error("SMTP CONNECTION FAILED:", err.message || err);
+    }
+  }
+
+  /**
+   * Send a temporary test email to substantiate SMTP delivery on Render.
+   */
+  public static async sendTestEmail() {
+    const recipients = ["ogunakatochukwu@gmail.com", "alelechi17@gmail.com"];
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    let rawSmtpFrom = process.env.SMTP_FROM || "ogunakatochukwu@gmail.com";
+    
+    let cleanEmail = rawSmtpFrom;
+    const match = rawSmtpFrom.match(/<([^>]+)>/);
+    if (match) {
+      cleanEmail = match[1];
+    }
+    const smtpFrom = `Tochukwu Website <${cleanEmail}>`;
+
+    console.log(`SMTP_HOST loaded: ${!!smtpHost}`);
+    console.log(`SMTP_USER loaded: ${!!smtpUser}`);
+    console.log(`SMTP_PASS loaded: ${!!smtpPass}`);
+    console.log(`SMTP_FROM loaded: ${!!rawSmtpFrom}`);
+
+    if (!smtpHost || !smtpUser || !smtpPass) {
+      console.log("EMAIL TEST SEND FAILED");
+      return { success: false, error: "SMTP configuration missing for Test Email." };
+    }
+
+    try {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        auth: {
+          user: smtpUser,
+          pass: smtpPass
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+
+      await transporter.verify();
+      console.log("SMTP CONNECTION SUCCESS");
+
+      console.log("EMAIL TEST SEND START");
+
+      const mailOptions = {
+        from: smtpFrom,
+        replyTo: "noreply@tochukwu.com",
+        to: recipients,
+        subject: "Render Production Email Test",
+        html: `<p>This confirms SMTP delivery from Render.</p>`,
+        text: `This confirms SMTP delivery from Render.`
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+
+      console.log("LOG:\nSMTP SEND DONE (TEST)");
+      console.log(`- messageId: ${info.messageId || "N/A"}`);
+      console.log(`- accepted: ${JSON.stringify(info.accepted || [])}`);
+      console.log(`- rejected: ${JSON.stringify(info.rejected || [])}`);
+      console.log(`- response: ${info.response || "N/A"}`);
+      console.log(`- envelope: ${JSON.stringify(info.envelope || {})}`);
+
+      const acceptedList = Array.isArray(info.accepted) 
+        ? info.accepted.map((r: any) => typeof r === 'string' ? r.toLowerCase() : JSON.stringify(r)) 
+        : [];
+      
+      const hasAccepted = recipients.some(recip => 
+        acceptedList.some(acc => acc.includes(recip.toLowerCase()))
+      );
+
+      if (!hasAccepted) {
+        const errorDetail = `No destination email found in accepted recipients. Accepted: ${JSON.stringify(info.accepted)}`;
+        console.log("EMAIL TEST SEND FAILED");
+        return { success: false, error: errorDetail };
+      }
+
+      console.log("EMAIL TEST SEND SUCCESS");
+      return { success: true };
+    } catch (err: any) {
+      console.log("EMAIL TEST SEND FAILED");
+      console.error(`[SMTP TEST ERROR] Test email dispatch failed:`, err.message || err);
+      return { success: false, error: err.message || String(err) };
+    }
+  }
+  /**
    * Send notification email immediately when a contact form is submitted.
    * If SMTP settings are missing, does a clean diagnostic log.
    */
@@ -161,8 +287,15 @@ Communication Professional & Media Specialist
         auth: {
           user: smtpUser,
           pass: smtpPass
+        },
+        tls: {
+          rejectUnauthorized: false
         }
       });
+
+      console.log("[SMTP] Verifying connection...");
+      await transporter.verify();
+      console.log("SMTP CONNECTION SUCCESS");
 
       const info = await transporter.sendMail({
         from: smtpFrom,
@@ -175,9 +308,10 @@ Communication Professional & Media Specialist
 
       console.log("LOG:\nSMTP SEND DONE");
       console.log(`- messageId: ${info.messageId || "N/A"}`);
-      console.log(`- accepted recipients: ${JSON.stringify(info.accepted || [])}`);
-      console.log(`- rejected recipients: ${JSON.stringify(info.rejected || [])}`);
-      console.log(`- response status: ${info.response || "N/A"}`);
+      console.log(`- accepted: ${JSON.stringify(info.accepted || [])}`);
+      console.log(`- rejected: ${JSON.stringify(info.rejected || [])}`);
+      console.log(`- response: ${info.response || "N/A"}`);
+      console.log(`- envelope: ${JSON.stringify(info.envelope || {})}`);
 
       // Gmail compatibility / Acceptance Check
       const acceptedList = Array.isArray(info.accepted) 
@@ -197,7 +331,7 @@ Communication Professional & Media Specialist
       console.log(`[SMTP] Success! Email message sent successfully: ${info.messageId}`);
       return { success: true, messageId: info.messageId };
     } catch (err: any) {
-      console.error(`[SMTP ERROR] Failed to send email via SMTP service:`, err.message || err);
+      console.error(`LOG:\nEMAIL SEND FAILED + ERROR: ${err.message || String(err)}`);
       return { success: false, error: err.message || String(err) };
     }
   }
