@@ -950,10 +950,34 @@ app.get("/api/test-email", async (req, res) => {
     if (result.success) {
       res.json({ success: true, message: "Test email sent" });
     } else {
-      res.status(500).json({ success: false, message: "Email delivery failed", error: result.error });
+      const errorObj = {
+        message: result.error || "SMTP delivery failed",
+        code: (result as any).code,
+        response: (result as any).response,
+        command: (result as any).command
+      };
+      console.error("SMTP TEST FAILED:", errorObj);
+      if (errorObj.code) console.log("error.code:", errorObj.code);
+      if (errorObj.response) console.log("error.response:", errorObj.response);
+      if (errorObj.command) console.log("error.command:", errorObj.command);
+
+      res.status(500).json({
+        success: false,
+        message: "Email delivery failed",
+        error: errorObj.message
+      });
     }
-  } catch (err: any) {
-    res.status(500).json({ success: false, message: "Email delivery failed", error: err.message || String(err) });
+  } catch (error: any) {
+    console.error("SMTP TEST FAILED:", error);
+    if (error.code) console.log("error.code:", error.code);
+    if (error.response) console.log("error.response:", error.response);
+    if (error.command) console.log("error.command:", error.command);
+
+    res.status(500).json({
+      success: false,
+      message: "Email delivery failed",
+      error: error.message || String(error)
+    });
   }
 });
 

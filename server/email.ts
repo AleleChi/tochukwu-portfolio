@@ -137,8 +137,17 @@ export class EmailService {
       return { success: true };
     } catch (err: any) {
       console.log("EMAIL TEST SEND FAILED");
-      console.error(`[SMTP TEST ERROR] Test email dispatch failed:`, err.message || err);
-      return { success: false, error: err.message || String(err) };
+      console.error("SMTP TEST FAILED:", err);
+      if (err.code) console.log("error.code:", err.code);
+      if (err.response) console.log("error.response:", err.response);
+      if (err.command) console.log("error.command:", err.command);
+      return { 
+        success: false, 
+        error: err.message || String(err), 
+        code: err.code, 
+        response: err.response, 
+        command: err.command 
+      };
     }
   }
   /**
