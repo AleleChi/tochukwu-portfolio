@@ -26,11 +26,13 @@ const PORT = 3000;
 app.use((req, res, next) => {
   const allowedOrigins = [
     "https://tochukwu-portfolio-five.vercel.app",
+     "https://tochi1.netlify.app", 
     "http://localhost:3000",
     "http://localhost:5173",
   ];
+
   const origin = req.headers.origin;
-  if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app") || origin.includes(".run.app") || origin.includes("ais-"))) {
+  if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app") || origin.endsWith(".netlify.app") || origin.includes(".run.app") || origin.includes("ais-"))) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   } else {
     res.setHeader("Access-Control-Allow-Origin", "*");
