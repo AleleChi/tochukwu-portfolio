@@ -53,7 +53,12 @@ export class EmailService {
    * Send a temporary test email to substantiate SMTP delivery on Render.
    */
   public static async sendTestEmail() {
-    const recipients = ["ogunakatochukwu@gmail.com", "alelechi17@gmail.com"];
+    const emailTo = process.env.EMAIL_TO;
+    if (!emailTo) {
+      console.log("EMAIL TEST SEND FAILED");
+      return { success: false, error: "EMAIL_TO environment variable is missing for Test Email." };
+    }
+    const recipients = emailTo.split(",").map(email => email.trim()).filter(Boolean);
     const smtpHost = process.env.SMTP_HOST;
     const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
     const smtpUser = process.env.SMTP_USER;
@@ -141,7 +146,13 @@ export class EmailService {
    * If SMTP settings are missing, does a clean diagnostic log.
    */
   public static async sendEnquiryNotification(payload: EmailPayload, originHost: string = "localhost:3000") {
-    const recipients = ["ogunakatochukwu@gmail.com", "alelechi17@gmail.com"];
+    const emailTo = process.env.EMAIL_TO;
+    if (!emailTo) {
+      const errMsg = "EMAIL_TO environment variable is missing for notification delivery.";
+      console.error(errMsg);
+      return { success: false, error: errMsg };
+    }
+    const recipients = emailTo.split(",").map(email => email.trim()).filter(Boolean);
     
     const smtpHost = process.env.SMTP_HOST;
     const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
