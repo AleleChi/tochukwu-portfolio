@@ -53,7 +53,7 @@ async function createGmailTransporter() {
 
 export class EmailService {
   /**
-   * Verify SMTP connection properties and log configuration presence securely.
+   * Verify Gmail OAuth2 credentials are loaded correctly.
    */
   public static async verifySmtpConnection() {
     const clientId = process.env.GMAIL_CLIENT_ID;
@@ -67,21 +67,27 @@ export class EmailService {
     console.log(`SMTP_USER loaded: ${!!smtpUser}`);
 
     if (!clientId || !clientSecret || !refreshToken || !smtpUser) {
-      console.log("[SMTP] Skipping check: Gmail OAuth2 environment variables are not fully configured.");
+      console.log("[GMAIL] Skipping check: Gmail OAuth2 environment variables are not fully configured.");
       return;
     }
 
     try {
-      const { transporter } = await createGmailTransporter();
-      await transporter.verify();
-      console.log("SMTP CONNECTION SUCCESS");
+      // Just test token retrieval — no SMTP verify() call to avoid timeouts
+      const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, "https://developers.google.com/oauthplayground");
+      oauth2Client.setCredentials({ refresh_token: refreshToken });
+      const tokenResponse = await oauth2Client.getAccessToken();
+      if (tokenResponse?.token) {
+        console.log("GMAIL OAuth2 CONNECTION SUCCESS");
+      } else {
+        console.error("GMAIL OAuth2 CONNECTION FAILED: Could not retrieve access token");
+      }
     } catch (err: any) {
-      console.error("SMTP CONNECTION FAILED:", err.message || err);
+      console.error("GMAIL OAuth2 CONNECTION FAILED:", err.message || err);
     }
   }
 
   /**
-   * Send a temporary test email to substantiate Gmail OAuth2 delivery on Render.
+   * Send a test email to confirm Gmail OAuth2 delivery on Render.
    */
   public static async sendTestEmail() {
     const emailTo = process.env.EMAIL_TO;
@@ -99,8 +105,6 @@ export class EmailService {
     try {
       const { transporter, smtpUser } = await createGmailTransporter();
 
-      await transporter.verify();
-      console.log("SMTP CONNECTION SUCCESS");
       console.log("EMAIL TEST SEND START");
 
       const info = await transporter.sendMail({
@@ -152,7 +156,7 @@ export class EmailService {
   }
 
   /**
-   * Send notification email immediately when a contact form is submitted.
+   * Send notification email when a contact form is submitted.
    */
   public static async sendEnquiryNotification(payload: EmailPayload, originHost: string = "localhost:3000") {
     const emailTo = process.env.EMAIL_TO;
@@ -172,18 +176,11 @@ To configure ACTUAL delivery, set GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_RE
 Recipients: ${recipients.join(", ")}
 Subject: New Professional Enquiry — Tochukwu Ogunaka
 ------------------------------------------------------------
-Hello Tochukwu,
-
-You have received a new enquiry through your professional website.
-
 Name: ${payload.name}
 Email: ${payload.email}
 Organization: ${payload.organization || "Not Specified"}
 Area of Interest: ${payload.category || "General Enquiry"}
-
-Message:
-${payload.message}
-
+Message: ${payload.message}
 Submitted: ${new Date(payload.timestamp).toLocaleString()}
 ============================================================
       `);
@@ -272,10 +269,7 @@ Communication Professional & Media Specialist`;
     try {
       const { transporter, smtpUser } = await createGmailTransporter();
 
-      // console.log("[SMTP] Verifying connection...");
-      // await transporter.verify();
-      // console.log("SMTP CONNECTION SUCCESS");
-
+      // No transporter.verify() — causes timeouts with OAuth2 on Render
       const info = await transporter.sendMail({
         from: `Tochukwu Website <${smtpUser}>`,
         replyTo: payload.email,
@@ -306,7 +300,7 @@ Communication Professional & Media Specialist`;
         return { success: false, error: errorDetail };
       }
 
-      console.log(`[SMTP] Success! Email message sent successfully: ${info.messageId}`);
+      console.log(`[GMAIL] Success! Email sent successfully: ${info.messageId}`);
       return { success: true, messageId: info.messageId };
     } catch (err: any) {
       console.error(`LOG:\nEMAIL SEND FAILED + ERROR: ${err.message || String(err)}`);
@@ -315,7 +309,7 @@ Communication Professional & Media Specialist`;
   }
 
   /**
-   * Send a professional reply to the client/visitor immediately.
+   * Send a professional reply to the client/visitor.
    */
   public static async sendResponseReply(recipientName: string, recipientEmail: string, subject: string, replyMessage: string) {
     const textBody = `Hello ${recipientName},
@@ -369,6 +363,7 @@ Subject: ${subject}
     try {
       const { transporter, smtpUser } = await createGmailTransporter();
 
+      // No transporter.verify() — causes timeouts with OAuth2 on Render
       const info = await transporter.sendMail({
         from: `Tochukwu Ogunaka <${smtpUser}>`,
         to: recipientEmail,
@@ -377,10 +372,10 @@ Subject: ${subject}
         text: textBody
       });
 
-      console.log(`[SMTP REPLY] Success! Reply sent to ${recipientEmail}: ${info.messageId}`);
+      console.log(`[GMAIL REPLY] Success! Reply sent to ${recipientEmail}: ${info.messageId}`);
       return { success: true, messageId: info.messageId };
     } catch (err: any) {
-      console.error(`[SMTP REPLY ERROR] Failed to send reply:`, err.message || err);
+      console.error(`[GMAIL REPLY ERROR] Failed to send reply:`, err.message || err);
       return { success: false, error: err.message || String(err) };
     }
   }
