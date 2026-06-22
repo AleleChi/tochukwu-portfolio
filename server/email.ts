@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { google } from "googleapis";
 
 export interface EmailPayload {
   name: string;
@@ -9,40 +10,69 @@ export interface EmailPayload {
   timestamp: string;
 }
 
+// Creates a fresh OAuth2 transporter using Gmail API credentials
+async function createGmailTransporter() {
+  const clientId = process.env.GMAIL_CLIENT_ID;
+  const clientSecret = process.env.GMAIL_CLIENT_SECRET;
+  const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
+  const smtpUser = process.env.SMTP_USER;
+
+  if (!clientId || !clientSecret || !refreshToken || !smtpUser) {
+    throw new Error("Missing Gmail OAuth2 credentials. Ensure GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, and SMTP_USER are set.");
+  }
+
+  const oauth2Client = new google.auth.OAuth2(
+    clientId,
+    clientSecret,
+    "https://developers.google.com/oauthplayground"
+  );
+
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
+
+  const accessTokenResponse = await oauth2Client.getAccessToken();
+  const accessToken = accessTokenResponse?.token;
+
+  if (!accessToken) {
+    throw new Error("Failed to retrieve Gmail OAuth2 access token.");
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      type: "OAuth2",
+      user: smtpUser,
+      clientId,
+      clientSecret,
+      refreshToken,
+      accessToken
+    }
+  });
+
+  return { transporter, smtpUser };
+}
+
 export class EmailService {
   /**
    * Verify SMTP connection properties and log configuration presence securely.
    */
   public static async verifySmtpConnection() {
-    const smtpHost = process.env.SMTP_HOST;
+    const clientId = process.env.GMAIL_CLIENT_ID;
+    const clientSecret = process.env.GMAIL_CLIENT_SECRET;
+    const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
     const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    const smtpFrom = process.env.SMTP_FROM;
 
-    console.log(`SMTP_HOST loaded: ${!!smtpHost}`);
+    console.log(`GMAIL_CLIENT_ID loaded: ${!!clientId}`);
+    console.log(`GMAIL_CLIENT_SECRET loaded: ${!!clientSecret}`);
+    console.log(`GMAIL_REFRESH_TOKEN loaded: ${!!refreshToken}`);
     console.log(`SMTP_USER loaded: ${!!smtpUser}`);
-    console.log(`SMTP_PASS loaded: ${!!smtpPass}`);
-    console.log(`SMTP_FROM loaded: ${!!smtpFrom}`);
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      console.log("[SMTP] Skipping SMTP check: SMTP environment variables are not fully configured.");
+    if (!clientId || !clientSecret || !refreshToken || !smtpUser) {
+      console.log("[SMTP] Skipping check: Gmail OAuth2 environment variables are not fully configured.");
       return;
     }
 
     try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
-        secure: (process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587) === 465,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
-      });
+      const { transporter } = await createGmailTransporter();
       await transporter.verify();
       console.log("SMTP CONNECTION SUCCESS");
     } catch (err: any) {
@@ -51,7 +81,7 @@ export class EmailService {
   }
 
   /**
-   * Send a temporary test email to substantiate SMTP delivery on Render.
+   * Send a temporary test email to substantiate Gmail OAuth2 delivery on Render.
    */
   public static async sendTestEmail() {
     const emailTo = process.env.EMAIL_TO;
@@ -60,59 +90,27 @@ export class EmailService {
       return { success: false, error: "EMAIL_TO environment variable is missing for Test Email." };
     }
     const recipients = emailTo.split(",").map(email => email.trim()).filter(Boolean);
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    let rawSmtpFrom = process.env.SMTP_FROM || "ogunakatochukwu@gmail.com";
-    
-    let cleanEmail = rawSmtpFrom;
-    const match = rawSmtpFrom.match(/<([^>]+)>/);
-    if (match) {
-      cleanEmail = match[1];
-    }
-    const smtpFrom = `Tochukwu Ogunaka <${cleanEmail}>`;
 
-    console.log(`SMTP_HOST loaded: ${!!smtpHost}`);
-    console.log(`SMTP_USER loaded: ${!!smtpUser}`);
-    console.log(`SMTP_PASS loaded: ${!!smtpPass}`);
-    console.log(`SMTP_FROM loaded: ${!!rawSmtpFrom}`);
-
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      console.log("EMAIL TEST SEND FAILED");
-      return { success: false, error: "SMTP configuration missing for Test Email." };
-    }
+    console.log(`GMAIL_CLIENT_ID loaded: ${!!process.env.GMAIL_CLIENT_ID}`);
+    console.log(`GMAIL_CLIENT_SECRET loaded: ${!!process.env.GMAIL_CLIENT_SECRET}`);
+    console.log(`GMAIL_REFRESH_TOKEN loaded: ${!!process.env.GMAIL_REFRESH_TOKEN}`);
+    console.log(`SMTP_USER loaded: ${!!process.env.SMTP_USER}`);
 
     try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
-      });
+      const { transporter, smtpUser } = await createGmailTransporter();
 
       await transporter.verify();
       console.log("SMTP CONNECTION SUCCESS");
-
       console.log("EMAIL TEST SEND START");
 
-      const mailOptions = {
-        from: smtpFrom,
-        replyTo: "ogunakatochukwu@gmail.com",
+      const info = await transporter.sendMail({
+        from: `Tochukwu Website <${smtpUser}>`,
+        replyTo: smtpUser,
         to: recipients,
         subject: "Render Production Email Test",
-        html: `<p>This confirms SMTP delivery from Render.</p>`,
-        text: `This confirms SMTP delivery from Render.`
-      };
-
-      const info = await transporter.sendMail(mailOptions);
+        html: `<p>This confirms Gmail OAuth2 delivery from Render.</p>`,
+        text: `This confirms Gmail OAuth2 delivery from Render.`
+      });
 
       console.log("LOG:\nSMTP SEND DONE (TEST)");
       console.log(`- messageId: ${info.messageId || "N/A"}`);
@@ -121,11 +119,11 @@ export class EmailService {
       console.log(`- response: ${info.response || "N/A"}`);
       console.log(`- envelope: ${JSON.stringify(info.envelope || {})}`);
 
-      const acceptedList = Array.isArray(info.accepted) 
-        ? info.accepted.map((r: any) => typeof r === 'string' ? r.toLowerCase() : JSON.stringify(r)) 
+      const acceptedList = Array.isArray(info.accepted)
+        ? info.accepted.map((r: any) => typeof r === "string" ? r.toLowerCase() : JSON.stringify(r))
         : [];
-      
-      const hasAccepted = recipients.some(recip => 
+
+      const hasAccepted = recipients.some(recip =>
         acceptedList.some(acc => acc.includes(recip.toLowerCase()))
       );
 
@@ -143,19 +141,18 @@ export class EmailService {
       if (err.code) console.log("error.code:", err.code);
       if (err.response) console.log("error.response:", err.response);
       if (err.command) console.log("error.command:", err.command);
-      return { 
-        success: false, 
-        error: err.message || String(err), 
-        code: err.code, 
-        response: err.response, 
-        command: err.command 
+      return {
+        success: false,
+        error: err.message || String(err),
+        code: err.code,
+        response: err.response,
+        command: err.command
       };
     }
   }
 
   /**
    * Send notification email immediately when a contact form is submitted.
-   * If SMTP settings are missing, does a clean diagnostic log.
    */
   public static async sendEnquiryNotification(payload: EmailPayload, originHost: string = "localhost:3000") {
     const emailTo = process.env.EMAIL_TO;
@@ -165,18 +162,33 @@ export class EmailService {
       return { success: false, error: errMsg };
     }
     const recipients = emailTo.split(",").map(email => email.trim()).filter(Boolean);
-    
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    let rawSmtpFrom = process.env.SMTP_FROM || "ogunakatochukwu@gmail.com";
-    let cleanEmail = rawSmtpFrom;
-    const match = rawSmtpFrom.match(/<([^>]+)>/);
-    if (match) {
-      cleanEmail = match[1];
+
+    // Fallback simulation if OAuth2 credentials are missing
+    if (!process.env.GMAIL_CLIENT_ID || !process.env.GMAIL_CLIENT_SECRET || !process.env.GMAIL_REFRESH_TOKEN || !process.env.SMTP_USER) {
+      console.log(`
+============================================================
+[SIMULATED EMAIL NOTIFICATION DISPATCH]
+To configure ACTUAL delivery, set GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, SMTP_USER.
+Recipients: ${recipients.join(", ")}
+Subject: New Professional Enquiry — Tochukwu Ogunaka
+------------------------------------------------------------
+Hello Tochukwu,
+
+You have received a new enquiry through your professional website.
+
+Name: ${payload.name}
+Email: ${payload.email}
+Organization: ${payload.organization || "Not Specified"}
+Area of Interest: ${payload.category || "General Enquiry"}
+
+Message:
+${payload.message}
+
+Submitted: ${new Date(payload.timestamp).toLocaleString()}
+============================================================
+      `);
+      return { success: true, simulated: true };
     }
-    const smtpFrom = `Tochukwu Ogunaka <${cleanEmail}>`;
 
     const textBody = `Hello Tochukwu,
 
@@ -257,72 +269,15 @@ Communication Professional & Media Specialist`;
       </div>
     `;
 
-    // Strict validation of SMTP environment configurations
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      console.log(`
-============================================================
-[SIMULATED EMAIL NOTIFICATION DISPATCH]
-To configure ACTUAL SMTP delivery, specify SMTP_HOST, SMTP_USER, SMTP_PASS inside AI Studio secrets or your .env file.
-Recipients: ${recipients.join(", ")}
-Subject: New Professional Enquiry — Tochukwu Ogunaka
-------------------------------------------------------------
-Hello Tochukwu,
-
-You have received a new enquiry through your professional website.
-
-Contact Details
-
-Name:
-${payload.name}
-
-Email:
-${payload.email}
-
-Organization:
-${payload.organization || "Not Specified"}
-
-Area of Interest:
-${payload.category || "General Enquiry"}
-
-Message:
-
-${payload.message}
-
-Submitted:
-${new Date(payload.timestamp).toLocaleString()}
-
-Please review this enquiry when convenient.
-
-Regards,
-
-Tochukwu Ogunaka
-Communication Professional & Media Specialist
-============================================================
-      `);
-      return { success: true, simulated: true };
-    }
-
     try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
-      });
+      const { transporter, smtpUser } = await createGmailTransporter();
 
       console.log("[SMTP] Verifying connection...");
       await transporter.verify();
       console.log("SMTP CONNECTION SUCCESS");
 
       const info = await transporter.sendMail({
-        from: smtpFrom,
+        from: `Tochukwu Website <${smtpUser}>`,
         replyTo: payload.email,
         to: recipients,
         subject: `New Professional Enquiry — Tochukwu Ogunaka`,
@@ -337,12 +292,11 @@ Communication Professional & Media Specialist
       console.log(`- response: ${info.response || "N/A"}`);
       console.log(`- envelope: ${JSON.stringify(info.envelope || {})}`);
 
-      // Gmail compatibility / Acceptance Check
-      const acceptedList = Array.isArray(info.accepted) 
-        ? info.accepted.map((r: any) => typeof r === 'string' ? r.toLowerCase() : JSON.stringify(r)) 
+      const acceptedList = Array.isArray(info.accepted)
+        ? info.accepted.map((r: any) => typeof r === "string" ? r.toLowerCase() : JSON.stringify(r))
         : [];
-      
-      const hasAccepted = recipients.some(recip => 
+
+      const hasAccepted = recipients.some(recip =>
         acceptedList.some(acc => acc.includes(recip.toLowerCase()))
       );
 
@@ -364,15 +318,6 @@ Communication Professional & Media Specialist
    * Send a professional reply to the client/visitor immediately.
    */
   public static async sendResponseReply(recipientName: string, recipientEmail: string, subject: string, replyMessage: string) {
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    let smtpFrom = process.env.SMTP_FROM || `"Tochukwu Ogunaka" <ogunakatochukwu@gmail.com>`;
-    if (process.env.SMTP_FROM && !process.env.SMTP_FROM.includes("<")) {
-      smtpFrom = `"Tochukwu Ogunaka" <${process.env.SMTP_FROM}>`;
-    }
-
     const textBody = `Hello ${recipientName},
 
 Thank you for reaching out.
@@ -409,48 +354,23 @@ Communication Professional & Media Specialist`;
       </div>
     `;
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
+    if (!process.env.GMAIL_CLIENT_ID || !process.env.GMAIL_CLIENT_SECRET || !process.env.GMAIL_REFRESH_TOKEN || !process.env.SMTP_USER) {
       console.log(`
 ============================================================
 [SIMULATED EMAIL REPLY DISPATCH]
-To configure ACTUAL SMTP delivery, specify SMTP_HOST, SMTP_USER, SMTP_PASS inside AI Studio secrets or your .env file.
+To configure ACTUAL delivery, set GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, SMTP_USER.
 Recipient: ${recipientEmail}
 Subject: ${subject}
-------------------------------------------------------------
-Hello ${recipientName},
-
-Thank you for reaching out.
-
-${replyMessage}
-
-I appreciate your interest and will be glad to discuss this further.
-
-Regards,
-
-Tochukwu Ogunaka
-Communication Professional & Media Specialist
 ============================================================
       `);
       return { success: true, simulated: true };
     }
 
     try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
-      });
+      const { transporter, smtpUser } = await createGmailTransporter();
 
       const info = await transporter.sendMail({
-        from: smtpFrom,
+        from: `Tochukwu Ogunaka <${smtpUser}>`,
         to: recipientEmail,
         subject: subject,
         html: htmlBody,
@@ -460,7 +380,7 @@ Communication Professional & Media Specialist
       console.log(`[SMTP REPLY] Success! Reply sent to ${recipientEmail}: ${info.messageId}`);
       return { success: true, messageId: info.messageId };
     } catch (err: any) {
-      console.error(`[SMTP REPLY ERROR] Failed to send reply via SMTP:`, err.message || err);
+      console.error(`[SMTP REPLY ERROR] Failed to send reply:`, err.message || err);
       return { success: false, error: err.message || String(err) };
     }
   }
