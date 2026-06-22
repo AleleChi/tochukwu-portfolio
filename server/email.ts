@@ -40,7 +40,8 @@ export class EmailService {
         },
         tls: {
           rejectUnauthorized: false
-        }
+        },
+        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
       });
       await transporter.verify();
       console.log("SMTP CONNECTION SUCCESS");
@@ -70,7 +71,7 @@ export class EmailService {
     if (match) {
       cleanEmail = match[1];
     }
-    const smtpFrom = `Tochukwu Website <${cleanEmail}>`;
+    const smtpFrom = `Tochukwu Ogunaka <${cleanEmail}>`;
 
     console.log(`SMTP_HOST loaded: ${!!smtpHost}`);
     console.log(`SMTP_USER loaded: ${!!smtpUser}`);
@@ -93,7 +94,8 @@ export class EmailService {
         },
         tls: {
           rejectUnauthorized: false
-        }
+        },
+        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
       });
 
       await transporter.verify();
@@ -103,7 +105,7 @@ export class EmailService {
 
       const mailOptions = {
         from: smtpFrom,
-        replyTo: "noreply@tochukwu.com",
+        replyTo: "ogunakatochukwu@gmail.com",
         to: recipients,
         subject: "Render Production Email Test",
         html: `<p>This confirms SMTP delivery from Render.</p>`,
@@ -150,6 +152,7 @@ export class EmailService {
       };
     }
   }
+
   /**
    * Send notification email immediately when a contact form is submitted.
    * If SMTP settings are missing, does a clean diagnostic log.
@@ -173,7 +176,7 @@ export class EmailService {
     if (match) {
       cleanEmail = match[1];
     }
-    const smtpFrom = `Tochukwu Website <${cleanEmail}>`;
+    const smtpFrom = `Tochukwu Ogunaka <${cleanEmail}>`;
 
     const textBody = `Hello Tochukwu,
 
@@ -310,7 +313,8 @@ Communication Professional & Media Specialist
         },
         tls: {
           rejectUnauthorized: false
-        }
+        },
+        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
       });
 
       console.log("[SMTP] Verifying connection...");
@@ -438,7 +442,11 @@ Communication Professional & Media Specialist
         auth: {
           user: smtpUser,
           pass: smtpPass
-        }
+        },
+        tls: {
+          rejectUnauthorized: false
+        },
+        family: 4  // Force IPv4 to avoid Render IPv6 ENETUNREACH errors
       });
 
       const info = await transporter.sendMail({
